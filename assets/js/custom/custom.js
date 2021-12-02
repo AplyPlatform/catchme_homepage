@@ -18,6 +18,32 @@
 
     });
 
+    const targetsInfo = [
+        ["recruit", "https://aply.biz/recruit/index.html"],
+        ["duni", "https://duni.io"],
+        ["dunipilot", "https://pilot.duni.io"],
+        ["dunistock", "https://dunistock.com"],
+        ["dromi", "https://dromi.aply.biz"],
+        ["dkdk", "https://dkdk.io"],
+        ["drdr", "https://drdr.io"],
+        ["blog", "https://blog.naver.com/duniplatform"],
+        ["catchme", "https://catchme.aply.biz"]
+    ];
+
+    $('#selSites').change(function () {
+        let targetVal = $(this).val();
+        let targetUrl = "";
+
+        targetsInfo.forEach(function (t) {
+            if (t[0] == targetVal) {
+                targetUrl = t[1];
+            }
+        });
+
+        if (targetUrl != "")
+            window.open(targetUrl, "new");
+    });
+
     $(document).ready(function() {
 
         var header             = $('.header'),
