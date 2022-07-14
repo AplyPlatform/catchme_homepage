@@ -19,16 +19,21 @@
     });
 
     const targetsInfo = [
-        ["recruit", "https://aply.biz/recruit/index.html"],
+        ["aply", "https://home.aply.biz/"],
+        ["recruit", "https://home.aply.biz/recruit/index.html"],
         ["duni", "https://duni.io"],
         ["dunipilot", "https://pilot.duni.io"],
         ["dunistock", "https://dunistock.com"],
         ["dromi", "https://dromi.aply.biz"],
+        ["aplx", "https://aplx.aply.biz"],
         ["dkdk", "https://dkdk.io"],
         ["drdr", "https://drdr.io"],
         ["blog", "https://blog.naver.com/duniplatform"],
-        ["catchme", "https://catchme.aply.biz"]
+        ["catchme", "https://catchme.aply.biz"],
+        ["kiosk", "https://kiosk.aply.biz"],
+        ["polaris", "https://polarisconsulting.modoo.at"]
     ];
+
 
     $('#selSites').change(function () {
         let targetVal = $(this).val();
