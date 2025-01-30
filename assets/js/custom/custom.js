@@ -21,7 +21,7 @@ let appSent = false;
 
     });
 
-    grecaptcha.ready(function () {
+    turnstile.ready(function () {
         isRecaptchaInit = true;			
     });
 
@@ -708,21 +708,26 @@ function sendApplicationData(form_id, token)
 	$(form_id).append(ref);
 
 	if (isRecaptchaInit == false) {
-		grecaptcha.ready(function() {
+        turnstile.ready(function () {
 			isRecaptchaInit = true;
-
-			grecaptcha.execute('6LfPn_UUAAAAAN-EHnm2kRY9dUT8aTvIcfrvxGy7', {action: 'homepage'}).then(function(token) {
-				$(form_id).find('input[name="form_token"]').val(token);
-				let fed = new FormData($(form_id)[0]);
-				ajaxRequestForContact(form_id, fed);
+			turnstile.render('#turnstileWidget', {
+				sitekey: '0x4AAAAAAA62_43H2MO9goDN',
+				callback: function(token) {
+					$(form_id).find('input[name="form_token"]').val(token);
+                    let fed = new FormData($(form_id)[0]);
+                    ajaxRequestForContact(form_id, fed);
+				},
 			});
 		});
 	}
 	else {
-		grecaptcha.execute('6LfPn_UUAAAAAN-EHnm2kRY9dUT8aTvIcfrvxGy7', {action: 'homepage'}).then(function(token) {
-			$(form_id).find('input[name="form_token"]').val(token);
-			let fed = new FormData($(form_id)[0]);
-			ajaxRequestForContact(form_id, fed);
+        turnstile.render('#turnstileWidget', {
+			sitekey: '0x4AAAAAAA62_43H2MO9goDN',
+			callback: function(token) {
+				$(form_id).find('input[name="form_token"]').val(token);
+                let fed = new FormData($(form_id)[0]);
+                ajaxRequestForContact(form_id, fed);
+			},
 		});
 	}	
 }
