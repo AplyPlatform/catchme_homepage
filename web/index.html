@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GGKXXGTS1Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GGKXXGTS1Z');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐치미 - 무궁화 꽃이 피었습니다!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
+
+        /* ── 색상 팔레트 (icon.png 라벤더 블루 기반) ── */
+        :root {
+            --c-bg:       #0e0f1e;
+            --c-surface:  #161830;
+            --c-surface2: #1e2048;
+            --c-border:   rgba(121,134,203,0.18);
+            --c-primary:  #7986CB;
+            --c-primary-l:#9FA8DA;
+            --c-primary-d:#5C6BC0;
+            --c-text:     #e8eaf6;
+            --c-muted:    #7986CB99;
+        }
+
+        * { font-family: 'Noto Sans KR', sans-serif; box-sizing: border-box; }
+        body { background: var(--c-bg); overflow-y: auto; color: var(--c-text); }
+        #settings-screen { min-height: 100vh; overflow-y: auto; }
+
+        .title-gradient {
+            background: linear-gradient(135deg, #9FA8DA, #7986CB, #5C6BC0, #b39ddb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        input[type=range] { -webkit-appearance: none; height: 6px; border-radius: 9999px; outline: none; background: #2a2d52; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: var(--c-primary); cursor: pointer;
+            box-shadow: 0 0 8px rgba(121,134,203,0.7);
+        }
+
+        .settings-card {
+            background: linear-gradient(145deg, var(--c-surface), #12143a);
+            border: 1px solid var(--c-border);
+        }
+
+        .cam-btn-active {
+            background: linear-gradient(135deg, var(--c-primary), var(--c-primary-d));
+            color: #fff; border-color: transparent;
+            box-shadow: 0 4px 16px rgba(92,107,192,0.4);
+        }
+        .cam-btn-inactive { background: transparent; color: #6b7280; border-color: #2a2d52; }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 16px rgba(239,68,68,0.7); }
+            50%       { box-shadow: 0 0 28px rgba(239,68,68,1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px) rotate(-2deg); }
+            40% { transform: translateX(8px) rotate(2deg); }
+            60% { transform: translateX(-6px) rotate(-1deg); }
+            80% { transform: translateX(6px) rotate(1deg); }
+        }
+        .shake { animation: shake 0.5s ease-in-out; }
+
+        @keyframes zoom-in {
+            from { transform: scale(0.5); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+        .zoom-in { animation: zoom-in 0.3s ease-out forwards; }
+
+        @keyframes flash-primary {
+            0%, 100% { background: transparent; }
+            50%       { background: rgba(121,134,203,0.25); }
+        }
+        .flash-primary { animation: flash-primary 0.22s ease-in-out 3; }
+
+        .status-pill { transition: all 0.3s ease; font-size: 13px; font-weight: 700; letter-spacing: 0.05em; }
+
+        .phase-text {
+            text-shadow: 0 0 30px currentColor, 0 2px 4px rgba(0,0,0,0.8);
+            transition: opacity 0.4s ease;
+        }
+
+        .timer-ring-svg { transform: rotate(-90deg); }
+        .timer-ring-circle { transition: stroke-dashoffset 1s linear; }
+
+        #caught-overlay, #gameover-overlay { backdrop-filter: blur(10px); }
+
+        .logo-img {
+            width: 72px; height: 72px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(121,134,203,0.4);
+        }
+
+        #game-message { color: var(--c-primary-l); }
+        .val-label { color: var(--c-primary-l); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- ===================== SETTINGS SCREEN ===================== -->
+<div id="settings-screen" class="flex flex-col items-center justify-center min-h-screen p-5">
+
+    <div class="text-center mb-8">
+        <img src="icon.png" alt="캐치미 로고" class="logo-img mx-auto mb-4">
+        <h1 class="title-gradient text-3xl font-black tracking-tight leading-tight">
+            캐치미<br>무궁화 꽃이 피었습니다!
+        </h1>
+        <p class="text-sm mt-2" style="color:var(--c-muted)">움직임 감지 게임 · 게임 설정</p>
+    </div>
+
+    <div class="settings-card rounded-3xl p-6 w-full max-w-sm shadow-2xl space-y-5">
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label class="text-sm font-semibold" style="color:#c5cae9">⏱ 감지 시간</label>
+                <span class="val-label font-black text-lg" id="lbl-detect-time">5초</span>
+            </div>
+            <input type="range" id="inp-detect-time" min="2" max="15" value="5" class="w-full">
+            <div class="flex justify-between text-xs mt-1" style="color:var(--c-muted)"><span>2초</span><span>15초</span></div>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label class="text-sm font-semibold" style="color:#c5cae9">🔁 반복 횟수</label>
+                <span class="val-label font-black text-lg" id="lbl-rounds">5회</span>
+            </div>
+            <input type="range" id="inp-rounds" min="1" max="20" value="5" class="w-full">
+            <div class="flex justify-between text-xs mt-1" style="color:var(--c-muted)"><span>1회</span><span>20회</span></div>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label class="text-sm font-semibold" style="color:#c5cae9">👁 감지 민감도</label>
+                <span class="val-label font-black text-lg" id="lbl-sens">중간</span>
+            </div>
+            <input type="range" id="inp-sens" min="1" max="3" value="2" class="w-full">
+            <div class="flex justify-between text-xs mt-1" style="color:var(--c-muted)"><span>낮음</span><span>높음</span></div>
+        </div>
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                <label class="text-sm font-semibold" style="color:#c5cae9">🗣 말하기 속도</label>
+                <span class="val-label font-black text-lg" id="lbl-rate">보통</span>
+            </div>
+            <input type="range" id="inp-rate" min="1" max="3" value="2" class="w-full">
+            <div class="flex justify-between text-xs mt-1" style="color:var(--c-muted)"><span>느리게</span><span>빠르게</span></div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-semibold mb-3" style="color:#c5cae9">📷 카메라 선택</label>
+            <div class="flex gap-2">
+                <button id="btn-cam-front" class="cam-btn-active flex-1 py-3 rounded-2xl border-2 font-bold text-sm transition-all"
+                    onclick="selectCamera('user')">전면 카메라</button>
+                <button id="btn-cam-rear" class="cam-btn-inactive flex-1 py-3 rounded-2xl border-2 font-bold text-sm transition-all"
+                    onclick="selectCamera('environment')">후면 카메라</button>
+            </div>
+        </div>
+
+        <button id="btn-start" onclick="initGame()"
+            class="w-full py-4 rounded-2xl font-black text-lg text-white transition-all duration-150
+                   hover:scale-[1.02] active:scale-95"
+            style="background: linear-gradient(135deg, var(--c-primary), var(--c-primary-d));
+                   box-shadow: 0 6px 24px rgba(92,107,192,0.5);">
+            🚦 게임 시작
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 mb-4 flex flex-col items-center gap-2" style="opacity:0.5">
+        <img src="aply_ci.png" alt="APLY Inc." style="height:18px; filter: brightness(0) invert(1);">
+        <p class="text-xs" style="color:var(--c-muted)">Copyright(C) 2026 APLY Inc.</p>
+    </footer>
+</div>
+
+<!-- ===================== LOADING SCREEN ===================== -->
+<div id="loading-screen" class="hidden fixed inset-0 flex-col items-center justify-center z-50"
+    style="background: var(--c-bg)">
+    <img src="icon.png" alt="로고" class="logo-img mb-6" style="opacity:0.85">
+    <div class="relative w-16 h-16 mb-5">
+        <div class="absolute inset-0 rounded-full border-4" style="border-color:#2a2d52"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-t-transparent animate-spin"
+            style="border-color: var(--c-primary); border-top-color: transparent;"></div>
+    </div>
+    <p class="text-xl font-black" style="color:var(--c-primary-l)">AI 모델 로딩중...</p>
+    <p class="text-sm mt-2" style="color:var(--c-muted)" id="loading-msg">잠시만 기다려주세요</p>
+</div>
+
+<!-- ===================== GAME SCREEN ===================== -->
+<div id="game-screen" class="hidden fixed inset-0 flex-col">
+
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between px-4 py-3 backdrop-blur-sm z-20"
+        style="background: rgba(14,15,30,0.92); border-bottom: 1px solid var(--c-border)">
+        <button onclick="stopGame()"
+            class="text-xs px-3 py-1.5 rounded-xl border transition-colors"
+            style="color:var(--c-muted); border-color:#2a2d52"
+            onmouseover="this.style.borderColor='var(--c-primary)'"
+            onmouseout="this.style.borderColor='#2a2d52'">
+            ✕ 나가기
+        </button>
+        <div id="round-dots" class="flex gap-1.5 items-center"></div>
+        <div id="status-badge" class="status-pill px-3 py-1.5 rounded-full"
+            style="background:rgba(121,134,203,0.15); color:var(--c-primary-l); border:1px solid rgba(121,134,203,0.35)">
+            대기중
+        </div>
+    </div>
+
+    <!-- Camera Area -->
+    <div class="relative flex-1 overflow-hidden" id="camera-area" style="background:#000">
+        <video id="video" class="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none"
+            autoplay playsinline muted></video>
+        <canvas id="main-canvas" class="absolute inset-0 w-full h-full object-contain"></canvas>
+
+        <div id="phase-overlay" class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <div id="phase-text" class="phase-text text-8xl font-black opacity-0"></div>
+        </div>
+
+        <div id="timer-ring" class="hidden absolute top-4 right-4 w-16 h-16 z-10">
+            <svg class="timer-ring-svg w-full h-full" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="26" fill="none" stroke="#2a2d52" stroke-width="6"/>
+                <circle id="timer-ring-circle" class="timer-ring-circle" cx="32" cy="32" r="26"
+                    fill="none" stroke="#7986CB" stroke-width="6"
+                    stroke-dasharray="163.36" stroke-dashoffset="0"/>
+            </svg>
+            <div id="timer-text" class="absolute inset-0 flex items-center justify-center text-white font-black text-lg"></div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 py-3 px-4 z-10"
+            style="background: linear-gradient(to top, rgba(14,15,30,0.85), transparent)">
+            <p id="game-message" class="text-center text-base font-bold drop-shadow">준비중...</p>
+        </div>
+    </div>
+
+    <!-- Caught Overlay -->
+    <div id="caught-overlay" class="hidden fixed inset-0 flex items-center justify-center z-30 p-4"
+        style="background: rgba(14,15,30,0.75)">
+        <div class="rounded-3xl p-5 w-full max-w-xs text-center zoom-in shadow-2xl"
+            style="background:var(--c-surface); border:1px solid rgba(239,68,68,0.4);
+                   box-shadow: 0 0 40px rgba(239,68,68,0.2)">
+            <div class="text-4xl mb-1">🚨</div>
+            <h2 class="text-2xl font-black mb-3" style="color:#f87171">잡 았 다 !</h2>
+            <div class="rounded-2xl overflow-hidden mb-4" style="border:2px solid rgba(239,68,68,0.5)">
+                <canvas id="caught-canvas" class="w-full" width="300" height="220"></canvas>
+            </div>
+            <div id="caught-info" class="text-xs mb-3" style="color:var(--c-muted)"></div>
+            <button onclick="dismissCaught()"
+                class="px-8 py-2.5 rounded-xl font-bold text-sm text-white transition-colors"
+                style="background:#ef4444"
+                onmouseover="this.style.background='#dc2626'"
+                onmouseout="this.style.background='#ef4444'">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameover-overlay" class="hidden fixed inset-0 flex items-center justify-center z-30 p-4"
+        style="background: rgba(14,15,30,0.85)">
+        <div class="rounded-3xl p-8 w-full max-w-xs text-center zoom-in"
+            style="background:var(--c-surface); border:1px solid var(--c-border);
+                   box-shadow: 0 0 48px rgba(121,134,203,0.2)">
+            <img src="icon.png" alt="로고" class="w-14 h-14 rounded-2xl mx-auto mb-4">
+            <h2 class="text-2xl font-black mb-2" style="color:var(--c-primary-l)">게임 종료!</h2>
+            <p class="text-sm mb-2" style="color:var(--c-muted)">수고하셨습니다</p>
+            <p id="gameover-stats" class="text-sm mb-6" style="color:var(--c-text)"></p>
+            <button onclick="stopGame()"
+                class="px-8 py-3 rounded-xl font-black text-white transition-all hover:scale-105"
+                style="background: linear-gradient(135deg, var(--c-primary), var(--c-primary-d));
+                       box-shadow: 0 4px 16px rgba(92,107,192,0.4)">
+                설정으로 돌아가기
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SCRIPT ===================== -->
+<script src="script.js"></script>
+</body>
+</html>
