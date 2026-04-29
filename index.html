@@ -32,12 +32,322 @@
     <link rel="shortcut icon" href="assets/images/favicon.png">
     <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
     <!-- Web Fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600%7cPlayfair+Display:400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
     <!-- Plugins-->
     <link href="assets/css/plugins.min.css" rel="stylesheet">
     <!-- Template core CSS-->
     <link href="assets/css/template.css" rel="stylesheet">
+    <style>
+        /* ==========================================
+           DESIGN.md — Apple Design System
+           ========================================== */
+        :root {
+            --c-primary:        #0066cc;
+            --c-primary-focus:  #0071e3;
+            --c-primary-dark:   #2997ff;
+            --c-ink:            #1d1d1f;
+            --c-muted-80:       #333333;
+            --c-muted-48:       #7a7a7a;
+            --c-on-dark:        #ffffff;
+            --c-body-muted:     #cccccc;
+            --c-canvas:         #ffffff;
+            --c-parchment:      #f5f5f7;
+            --c-tile-dark:      #272729;
+            --c-nav-black:      #000000;
+            --c-hairline:       #e0e0e0;
+            --c-divider:        #f0f0f0;
+            --f-display: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            --f-text:    "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: var(--f-text) !important;
+            font-size: 17px !important;
+            line-height: 1.47 !important;
+            letter-spacing: -0.374px !important;
+            color: var(--c-ink) !important;
+            background: var(--c-canvas) !important;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--f-display) !important;
+            font-weight: 600 !important;
+        }
+
+        /* ---- NAVIGATION ---- */
+        .header,
+        .header.header-transparent {
+            background: var(--c-nav-black) !important;
+            height: 44px !important;
+            min-height: 44px !important;
+            border: none !important;
+            box-shadow: none !important;
+            position: fixed !important;
+            top: 0 !important; left: 0 !important; right: 0 !important;
+            z-index: 9999 !important;
+        }
+
+        .inner-brand,
+        .inner-brand:hover,
+        .inner-brand:focus {
+            font-family: var(--f-display) !important;
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            color: var(--c-on-dark) !important;
+            letter-spacing: 0 !important;
+            text-decoration: none !important;
+        }
+
+        .inner-nav li a,
+        .menu-item-span {
+            font-family: var(--f-text) !important;
+            font-size: 12px !important;
+            font-weight: 400 !important;
+            color: var(--c-on-dark) !important;
+            letter-spacing: -0.12px !important;
+            opacity: 0.85;
+            transition: opacity 0.1s ease;
+        }
+
+        .inner-nav li a:hover { opacity: 1; color: var(--c-on-dark) !important; }
+
+        /* ---- HERO ---- */
+        .module-cover-slides { margin-top: 44px; }
+
+        .module-cover-slides h1 {
+            font-family: var(--f-display) !important;
+            font-size: 56px !important;
+            font-weight: 600 !important;
+            line-height: 1.07 !important;
+            letter-spacing: -0.28px !important;
+            color: #ffffff !important;
+        }
+
+        .module-cover-slides p {
+            font-family: var(--f-display) !important;
+            font-size: 28px !important;
+            font-weight: 400 !important;
+            line-height: 1.14 !important;
+            letter-spacing: 0.196px !important;
+            color: rgba(255,255,255,0.88) !important;
+        }
+
+        /* ---- BUTTONS ---- */
+        .btn-circle { border-radius: 9999px !important; }
+
+        .btn-brand,
+        .btn-brand:visited {
+            background-color: var(--c-primary) !important;
+            color: #ffffff !important;
+            border: none !important;
+            border-radius: 9999px !important;
+            padding: 14px 28px !important;
+            font-family: var(--f-text) !important;
+            font-size: 18px !important;
+            font-weight: 300 !important;
+            line-height: 1.0 !important;
+            letter-spacing: 0 !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+            transition: background-color 0.15s ease, transform 0.1s ease !important;
+        }
+        .btn-brand:hover, .btn-brand:focus {
+            background-color: var(--c-primary-focus) !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        .btn-brand:active { transform: scale(0.95) !important; }
+
+        .btn-outline-new-white,
+        .btn-outline-new-white:visited {
+            background-color: transparent !important;
+            color: var(--c-primary-dark) !important;
+            border: 1px solid var(--c-primary-dark) !important;
+            border-radius: 9999px !important;
+            padding: 14px 28px !important;
+            font-family: var(--f-text) !important;
+            font-size: 18px !important;
+            font-weight: 300 !important;
+            line-height: 1.0 !important;
+            letter-spacing: 0 !important;
+            box-shadow: none !important;
+            transition: background-color 0.15s ease !important;
+        }
+        .btn-outline-new-white:hover {
+            background-color: rgba(41,151,255,0.12) !important;
+            color: var(--c-primary-dark) !important;
+        }
+
+        .btn-outline-brand,
+        .btn-outline-brand:visited {
+            background-color: transparent !important;
+            color: var(--c-primary) !important;
+            border: 1px solid var(--c-primary) !important;
+            border-radius: 9999px !important;
+            padding: 11px 22px !important;
+            font-family: var(--f-text) !important;
+            font-size: 17px !important;
+            font-weight: 400 !important;
+            letter-spacing: 0 !important;
+            box-shadow: none !important;
+            transition: background-color 0.15s ease, transform 0.1s ease !important;
+        }
+        .btn-outline-brand:hover {
+            background-color: rgba(0,102,204,0.08) !important;
+            color: var(--c-primary) !important;
+        }
+        .btn-outline-brand:active { transform: scale(0.95) !important; }
+
+        /* ---- CONTENT SECTIONS ---- */
+        .module { padding: 80px 0 !important; }
+        .module.bg-gray { background: var(--c-parchment) !important; }
+        .module.divider-bottom {
+            border-bottom: 1px solid var(--c-divider) !important;
+            box-shadow: none !important;
+        }
+        .module h1, .module h2 {
+            font-size: 40px !important;
+            font-weight: 600 !important;
+            line-height: 1.1 !important;
+            letter-spacing: 0 !important;
+            color: var(--c-ink) !important;
+        }
+        .module .lead {
+            font-family: var(--f-display) !important;
+            font-size: 21px !important;
+            font-weight: 400 !important;
+            line-height: 1.19 !important;
+            letter-spacing: 0.231px !important;
+            color: var(--c-muted-48) !important;
+        }
+
+        /* ---- DARK TILE ---- */
+        .module-dark-tile { background: var(--c-tile-dark) !important; padding: 80px 0 !important; }
+        .module-dark-tile h1,
+        .module-dark-tile h2 {
+            color: var(--c-on-dark) !important;
+            font-size: 40px !important;
+            font-weight: 600 !important;
+            line-height: 1.1 !important;
+        }
+        .module-dark-tile .lead { color: var(--c-body-muted) !important; }
+        .module-dark-tile p    { color: rgba(255,255,255,0.88) !important; }
+
+        /* ---- FEATURE ICON BOXES ---- */
+        .icon-box {
+            background: var(--c-canvas) !important;
+            border: 1px solid var(--c-hairline) !important;
+            border-radius: 18px !important;
+            padding: 24px !important;
+            box-shadow: none !important;
+            margin-bottom: 24px !important;
+        }
+        .icon-box-icon span { color: var(--c-primary) !important; font-size: 28px !important; }
+        .icon-box-title h6 {
+            font-family: var(--f-text) !important;
+            font-size: 17px !important;
+            font-weight: 600 !important;
+            letter-spacing: -0.374px !important;
+            color: var(--c-ink) !important;
+            margin-top: 12px !important;
+            margin-bottom: 8px !important;
+        }
+        .icon-box-content p {
+            font-family: var(--f-text) !important;
+            font-size: 14px !important;
+            font-weight: 400 !important;
+            line-height: 1.43 !important;
+            letter-spacing: -0.224px !important;
+            color: var(--c-muted-48) !important;
+            margin: 0 !important;
+        }
+
+        /* ---- SCREENSHOT CARDS ---- */
+        .team-item {
+            border-radius: 18px !important;
+            overflow: hidden !important;
+            box-shadow: none !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            margin-bottom: 24px;
+        }
+        .team-name {
+            font-family: var(--f-text) !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #ffffff !important;
+            letter-spacing: -0.224px !important;
+        }
+        .team-role {
+            font-family: var(--f-text) !important;
+            font-size: 12px !important;
+            color: rgba(255,255,255,0.7) !important;
+        }
+
+        /* ---- CONTACT SECTION ---- */
+        #contactus { padding: 64px 0 !important; }
+        #contactus hr, #contactus HR { border-color: var(--c-hairline) !important; }
+        #contactus h3, #contactus H3 {
+            font-family: var(--f-display) !important;
+            font-size: 21px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.231px !important;
+            color: var(--c-ink) !important;
+        }
+        #contactus a { color: var(--c-primary) !important; text-decoration: none !important; }
+        #contactus a:hover { color: var(--c-primary-focus) !important; }
+
+        /* ---- FOOTER ---- */
+        .footer,
+        .footer-widgets { background: var(--c-parchment) !important; }
+        .footer-widgets {
+            padding: 64px 0 !important;
+            border-top: 1px solid var(--c-hairline) !important;
+        }
+        .footer-bar {
+            background: var(--c-divider) !important;
+            border-top: 1px solid var(--c-hairline) !important;
+        }
+        .footer .copyright p,
+        .footer .copyright a {
+            font-family: var(--f-text) !important;
+            font-size: 12px !important;
+            font-weight: 400 !important;
+            color: var(--c-muted-48) !important;
+            letter-spacing: -0.12px !important;
+        }
+        .footer .copyright a:hover { color: var(--c-primary) !important; }
+        .footer-brand-name {
+            font-family: var(--f-display) !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: var(--c-muted-80) !important;
+            letter-spacing: -0.224px !important;
+            margin: 0;
+        }
+        .footer .social-icons li a,
+        .footer .social-icons li a i { color: var(--c-muted-80) !important; }
+        .footer .social-icons li a:hover,
+        .footer .social-icons li a:hover i { color: var(--c-primary) !important; }
+
+        /* ---- SCROLL TO TOP ---- */
+        .scroll-top {
+            background-color: var(--c-primary) !important;
+            border-radius: 50% !important;
+            width: 44px !important;
+            height: 44px !important;
+        }
+        .scroll-top i { color: #ffffff !important; }
+
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 640px) {
+            .module-cover-slides h1 { font-size: 34px !important; }
+            .module-cover-slides p  { font-size: 19px !important; }
+            .module h1, .module h2, .module-dark-tile h1 { font-size: 28px !important; }
+        }
+    </style>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 </head>
 
@@ -210,7 +520,7 @@
         <!-- Alt Services end-->
 
         <!-- Team-->
-        <section class="module">
+        <section class="module module-dark-tile">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 m-auto text-center">
@@ -330,8 +640,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <HR>
-                        <H3><a href="https://si.aply.biz/?p=contact" target="_blank">문의하기 <i class="fas fa-arrow-right"></i></a></H3>                        
+                        <hr>
+                        <h3><a href="https://si.aply.biz/?p=contact" target="_blank">문의하기 <i class="fas fa-arrow-right"></i></a></h3>
                     </div>
                 </div>                
             </div>
@@ -347,9 +657,7 @@
                             <aside class="widget widget-text">
                                 <div class="widget-title">
                                     <a href="#">
-                                        <font color=white>
-                                            <p><B>APLY Inc.</B></p>
-                                        </font>
+                                        <p class="footer-brand-name"><b>APLY Inc.</b></p>
                                     </a>
                                 </div>
                                 <div class="textwidget">
